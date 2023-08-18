@@ -5,6 +5,7 @@ from random import randint
 from ship import Ship
 from laser import Laser
 from enemy import Enemy
+from beam import Beam
 
 pygame.init()
 pygame.mixer.init()
@@ -49,6 +50,8 @@ lives = 3
 
 enemy_count = 1
 static_enemy_count = enemy_count
+
+beam = Beam()
 def create_enemies(enemy_count):
     for i in range(enemy_count):
         new_enemy = Enemy()
@@ -89,6 +92,11 @@ while True:
     screen.blit(ship.image, ship.rect)
     ship.animate()
 
+    if(beam.active == True):
+        beam.rect.x = ship.rect.x - 9
+        screen.blit(beam.image, beam.rect)
+        beam.animate()
+
     score_text = score_font.render(f"Score: {score}", True, (255, 255, 255))  
     screen.blit(score_text, (10, 10))  
 
@@ -97,6 +105,8 @@ while True:
 
     lives_text = score_font.render(f"Lives: {lives}", True, (255, 255, 255))  
     screen.blit(lives_text, (10, HEIGHT - 30))  
+
+
 
     if(laser.laser_state == "fire"):
         laser.animate()
@@ -126,8 +136,6 @@ while True:
             enemy.laser.laser_state = "ready"  
             lives -= 1
 
-                  
-    
     if(enemy_count == 0):
         for enemy in enemies:
             enemy.hit = False
