@@ -66,6 +66,8 @@ while True:
                 ship.left()
             if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                 ship.right()
+            if event.key == pygame.K_DOWN or event.key == pygame.K_s:
+                ship.direction = "stop"
             if event.key == pygame.K_SPACE:
                 if(laser.laser_state == "ready"):
                     laser.rect.center = ship.rect.center
@@ -94,7 +96,7 @@ while True:
     screen.blit(level_text, (WIDTH - 100, 10))  
 
     lives_text = score_font.render(f"Lives: {lives}", True, (255, 255, 255))  
-    screen.blit(lives_text, (10, HEIGHT-100))  
+    screen.blit(lives_text, (10, HEIGHT - 30))  
 
     if(laser.laser_state == "fire"):
         laser.animate()
@@ -117,9 +119,13 @@ while True:
             laser.speed += .25
             ship.speed += .25
             point_sound.play()
-        if(enemy.rect.y >= HEIGHT and enemy.hit == False or (pygame.rect.Rect.colliderect(ship.rect, enemy.laser.rect) and enemy.hit == False and enemy.laser.laser_state == "fire")):
+        if(enemy.rect.y >= HEIGHT and enemy.hit == False):
+            enemy.rect.center = (randint(30, WIDTH - 50), randint(-150, -20))
+            lives -= 1
+        if(pygame.rect.Rect.colliderect(ship.rect, enemy.laser.rect) and enemy.hit == False and enemy.laser.laser_state == "fire"):
             enemy.laser.laser_state = "ready"  
             lives -= 1
+
                   
     
     if(enemy_count == 0):

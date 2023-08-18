@@ -33,8 +33,8 @@ class Ship(pygame.sprite.Sprite):
                 self.rect.x = 0
         if(self.direction == "right"):
             self.rect.x += self.speed 
-            if(self.rect.x >= 430):
-                self.rect.x = 430
+            if(self.rect.x >= 455):
+                self.rect.x = 455
 
     def animate(self):
         self.move()
