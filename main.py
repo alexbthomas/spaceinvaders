@@ -45,7 +45,9 @@ enemies = []
 score_font = pygame.font.SysFont(None, 36)
 score = 0
 
-enemy_count = 5
+lives = 3
+
+enemy_count = 1
 static_enemy_count = enemy_count
 def create_enemies(enemy_count):
     for i in range(enemy_count):
@@ -88,6 +90,12 @@ while True:
     score_text = score_font.render(f"Score: {score}", True, (255, 255, 255))  
     screen.blit(score_text, (10, 10))  
 
+    level_text = score_font.render(f"Level: {static_enemy_count}", True, (255, 255, 255))  
+    screen.blit(level_text, (WIDTH - 100, 10))  
+
+    lives_text = score_font.render(f"Lives: {lives}", True, (255, 255, 255))  
+    screen.blit(lives_text, (10, HEIGHT-100))  
+
     if(laser.laser_state == "fire"):
         laser.animate()
         screen.blit(laser.image, laser.rect)
@@ -109,29 +117,10 @@ while True:
             laser.speed += .25
             ship.speed += .25
             point_sound.play()
-        if(enemy.rect.y >= HEIGHT and enemy.hit == False or (pygame.rect.Rect.colliderect(ship.rect, enemy.laser.rect) and enemy.hit == False)):
-            for enemy in enemies:
-                enemy.hit = False
-                enemy.rect.center = (randint(30, WIDTH - 50), randint(-150, -20))
-                enemy.laser.rect.center = enemy.rect.center
-                enemy.laser.laser_state = "ready"
-            enemy_count = 5
-            static_enemy_count = enemy_count
-            enemies = []
-            create_enemies(5)
-            score = 0
-            laser.speed = 15
-            ship.speed = 5
-            if(randint(1,2) == 1):
-                pygame.mixer.music.load('assets/sounds/Corneria.ogg')
-                pygame.mixer.music.set_volume(0.5)
-                
-            else:
-                pygame.mixer.music.load('assets/sounds/Wolf.ogg')
-                pygame.mixer.music.set_volume(0.5)
-            pygame.mixer.music.play(-1)
-        
-        
+        if(enemy.rect.y >= HEIGHT and enemy.hit == False or (pygame.rect.Rect.colliderect(ship.rect, enemy.laser.rect) and enemy.hit == False and enemy.laser.laser_state == "fire")):
+            enemy.laser.laser_state = "ready"  
+            lives -= 1
+                  
     
     if(enemy_count == 0):
         for enemy in enemies:
@@ -141,6 +130,31 @@ while True:
         enemy_count = static_enemy_count + 1
         static_enemy_count = enemy_count
         create_enemies(1)
+
+    if(lives == 0):
+        for enemy in enemies:
+            enemy.hit = False
+            enemy.rect.center = (randint(30, WIDTH - 50), randint(-150, -20))
+            enemy.laser.rect.center = enemy.rect.center
+            enemy.laser.laser_state = "ready"
+        enemy_count = 1
+        static_enemy_count = enemy_count
+        enemies = []
+        create_enemies(1)
+        score = 0
+        laser.speed = 15
+        ship.speed = 5
+        lives = 3
+        
+        if(randint(1,2) == 1):
+            pygame.mixer.music.load('assets/sounds/Corneria.ogg')
+            pygame.mixer.music.set_volume(0.5)
+            
+        else:
+            pygame.mixer.music.load('assets/sounds/Wolf.ogg')
+            pygame.mixer.music.set_volume(0.5)
+        pygame.mixer.music.play(-1)
+        
         
         
     clock.tick(60)
